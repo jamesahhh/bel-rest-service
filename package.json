@@ -1,0 +1,24 @@
+{
+  "name": "bel-rest-service",
+  "version": "1.0.0",
+  "description": "Node.js script for use as windows service",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jamesahhh/bel-rest-service.git"
+  },
+  "author": "Jamesahhh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jamesahhh/bel-rest-service/issues"
+  },
+  "homepage": "https://github.com/jamesahhh/bel-rest-service#readme",
+  "dependencies": {
+    "chokidar": "^3.5.1",
+    "dotenv": "^8.2.0",
+    "superagent": "^6.1.0"
+  }
+}
