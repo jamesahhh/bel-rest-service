@@ -41,7 +41,7 @@ function buildConfig(array) {
             CustomerNumber: array[5],
             Amountpaid: array[6],
             PaymentDate: now,
-            PaymentTime:
+            PaymentTime: time,
             ReceiptNumber: array[7],
             TransactionType: array[8],
             PaymentStatus: array[9],
@@ -77,7 +77,7 @@ function getResponse(config, ext) {
             writeToFile(JSON.stringify(response.data), ext)
         })
         .catch(function (error) {
-            writeToFile(JSON.stringify(error), ext)
+            writeToFile(JSON.stringify(error.response.data), ext)
         })
 }
 
