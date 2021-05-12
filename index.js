@@ -1,43 +1,90 @@
+require('dotenv').config()
 const { log } = require('console')
-const { readFileSync } = require('fs')
+const { unlink, access } = require('fs/promises')
+const { watch } = require('chokidar')
+const { constants, readFileSync, writeFile, mkdir, write } = require('fs')
 const { basename } = require('path')
-const request = require('superagent')
+var axios = require('axios')
 
-let funcs = {}
+checkFor(process.env.WATCH_DIRECTORY)
+checkFor(process.env.OUTPUT_DIRECTORY)
+
+var watcher = watch(process.env.WATCH_DIRECTORY, {
+    awaitWriteFinish: {
+        stabilityThreshold: 1500,
+        pollInterval: 100,
+    },
+    ignored: /^(?=.*(\.\w+)$)(?!.*(\.txt)$).*$/,
+})
+
+watcher.on('add', (path) => {
+    var obj = fileOps(path)
+    var configObj = buildConfig(obj.array)
+    getResponse(configObj, obj.ext)
+    fileClean(path)
+})
 
 function fileOps(path) {
-    var array = readFileSync(path).toString().split(/\r?\n/)
-    var ext = basename(path)
-    //TODO: api connect
-    //removeFile(path)
-    return array
+    let out = {}
+    out.array = readFileSync(path).toString().split(/\r?\n/)
+    out.ext = basename(path)
+    return out
 }
 
 function buildConfig(array) {
     return {
-        method: array[0],
-        username: array[1],
-        password: array[2],
-        cus_num: array[3],
-        acc_num: array[4],
-        token: array[5],
+        method: 'get',
+        url: `${process.env.base}/${array[3]}/${array[4]}`,
+        headers: {
+            username: array[1],
+            password: array[2],
+            token: array[5],
+        },
     }
 }
 
 //${config.cus_num}/${config.acc_num}
-function getResponse(config) {
-    return request
-        .get(
-            `https://payments.bel.com.bz:443/WebServiceTest/OnlineBank/Saldos/V1/${config.cus_num}/${config.acc_num}`
-        )
-        .timeout({
-            response: 5000, // Wait 5 seconds for the server to start sending,
-            deadline: 60000, // but allow 1 minute for the file to finish loading.
+function getResponse(config, ext) {
+    axios(config)
+        .then(function (response) {
+            writeToFile(JSON.stringify(response.data), ext)
         })
-        .then((res) => {
-            return res.body ? res.body : err.body
+        .catch(function (error) {
+            writeToFile(error, ext)
         })
-        .catch(console.error)
+}
+
+function writeToFile(content, ext) {
+    writeFile(`${process.env.OUTPUT_DIRECTORY}/${ext}`, content, (err) => {
+        if (err) {
+            log(err)
+            return false
+        }
+        return true
+    })
+}
+
+function fileClean(path) {
+    try {
+        unlink(path)
+    } catch (error) {
+        log(error.message)
+    }
+}
+
+function checkFor(path) {
+    try {
+        access(path, constants.R_OK | constants.W_OK)
+    } catch (err) {
+        createDirectory(path)
+    }
+}
+
+function createDirectory(path) {
+    mkdir(path, { recursive: true }, function (err) {
+        if (err) log(err)
+        else log(`Directory created at ${path}`)
+    })
 }
 
 module.exports = { getResponse, buildConfig, fileOps }
