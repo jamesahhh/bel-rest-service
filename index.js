@@ -34,7 +34,7 @@ function fileOps(path) {
 function buildConfig(array) {
     return {
         method: 'get',
-        url: `${process.env.baseURL}/${array[3]}/${array[4]}`,
+        url: `${process.env.baseGET}/${array[3]}/${array[4]}`,
         headers: {
             username: array[1],
             password: array[2],
@@ -50,7 +50,7 @@ function getResponse(config, ext) {
             writeToFile(JSON.stringify(response.data), ext)
         })
         .catch(function (error) {
-            writeToFile(JSON.stringify(error), ext)
+            writeToFile(JSON.stringify(error.response.data), ext)
         })
 }
 
