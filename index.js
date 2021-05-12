@@ -2,7 +2,7 @@ require('dotenv').config()
 const { log } = require('console')
 const { unlink, access } = require('fs/promises')
 const { watch } = require('chokidar')
-const { constants, readFileSync, writeFile, mkdir, write } = require('fs')
+const { constants, readFileSync, writeFile, mkdir } = require('fs')
 const { basename } = require('path')
 var axios = require('axios')
 
@@ -34,7 +34,7 @@ function fileOps(path) {
 function buildConfig(array) {
     return {
         method: 'get',
-        url: `${process.env.base}/${array[3]}/${array[4]}`,
+        url: `${process.env.baseURL}/${array[3]}/${array[4]}`,
         headers: {
             username: array[1],
             password: array[2],
@@ -50,23 +50,21 @@ function getResponse(config, ext) {
             writeToFile(JSON.stringify(response.data), ext)
         })
         .catch(function (error) {
-            writeToFile(error, ext)
+            writeToFile(JSON.stringify(error), ext)
         })
 }
 
 function writeToFile(content, ext) {
     writeFile(`${process.env.OUTPUT_DIRECTORY}/${ext}`, content, (err) => {
         if (err) {
-            log(err)
-            return false
+            console.error(err)
         }
-        return true
     })
 }
 
-function fileClean(path) {
+async function fileClean(path) {
     try {
-        unlink(path)
+        await unlink(path)
     } catch (error) {
         log(error.message)
     }
@@ -87,4 +85,4 @@ function createDirectory(path) {
     })
 }
 
-module.exports = { getResponse, buildConfig, fileOps }
+module.exports = {}
