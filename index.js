@@ -32,15 +32,34 @@ function fileOps(path) {
 }
 
 function buildConfig(array) {
-    return {
-        method: 'get',
-        url: `${process.env.baseURL}/${array[3]}/${array[4]}`,
-        headers: {
-            username: array[1],
-            password: array[2],
-            token: array[5],
-        },
+    if (array[0] == 'SetPayment') {
+        var now = moment().format('YYYY-MM-DD')
+        var time = moment().format('h:mm:ssA')
+        let data = {
+            AccountNumber: '1234',
+            CustomerNumber: 
+        }
     }
+    return array[0] == 'GetAccount'
+        ? {
+              method: 'get',
+              url: `${process.env.baseGet}/${array[3]}/${array[4]}`,
+              headers: {
+                  username: array[1],
+                  password: array[2],
+                  token: array[5],
+              },
+          }
+        : {
+              method: 'post',
+              url: `${process.env.basePost}/${array[3]}/${array[4]}`,
+              headers: {
+                  username: array[1],
+                  password: array[2],
+                  token: array[5],
+                  'Content-Type': 'application/json',
+              },
+          }
 }
 
 //${config.cus_num}/${config.acc_num}
