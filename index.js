@@ -32,12 +32,19 @@ function fileOps(path) {
 }
 
 function buildConfig(array) {
+    var now, time, indata
     if (array[0] == 'SetPayment') {
-        var now = moment().format('YYYY-MM-DD')
-        var time = moment().format('h:mm:ssA')
-        let data = {
-            AccountNumber: '1234',
-            CustomerNumber: 
+        now = moment().format('YYYY-MM-DD')
+        time = moment().format('h:mm:ssA')
+        inData = {
+            AccountNumber: array[4],
+            CustomerNumber: array[5],
+            Amountpaid: array[6],
+            PaymentDate: now,
+            PaymentTime:
+            ReceiptNumber: array[7],
+            TransactionType: array[8],
+            PaymentStatus: array[9],
         }
     }
     return array[0] == 'GetAccount'
@@ -56,9 +63,10 @@ function buildConfig(array) {
               headers: {
                   username: array[1],
                   password: array[2],
-                  token: array[5],
+                  token: array[3],
                   'Content-Type': 'application/json',
               },
+              data: inData,
           }
 }
 
