@@ -33,7 +33,7 @@ function fileOps(path) {
 }
 
 function buildConfig(array) {
-    var now, time, indata
+    var now, time, inData
     if (array[0] == 'SetPayment') {
         now = moment().format('DD-MMM-yyyy').toUpperCase()
         time = moment().format('H:mm:ss')
