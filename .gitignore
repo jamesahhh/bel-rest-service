@@ -119,3 +119,5 @@ XMLexamples
 
 # ignore generated code by node-windows
 daemon
+
+*.zip

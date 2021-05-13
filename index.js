@@ -4,6 +4,7 @@ const { unlink, access } = require('fs/promises')
 const { watch } = require('chokidar')
 const { constants, readFileSync, writeFile, mkdir } = require('fs')
 const { basename } = require('path')
+const moment = require('moment')
 var axios = require('axios')
 
 checkFor(process.env.WATCH_DIRECTORY)
@@ -34,11 +35,11 @@ function fileOps(path) {
 function buildConfig(array) {
     var now, time, indata
     if (array[0] == 'SetPayment') {
-        now = moment().format('YYYY-MM-DD')
-        time = moment().format('h:mm:ssA')
+        now = moment().format('DD-MMM-yyyy').toUpperCase()
+        time = moment().format('H:mm:ss')
         inData = {
-            AccountNumber: array[4],
-            CustomerNumber: array[5],
+            AccountNumber: array[5],
+            CustomerNumber: array[4],
             Amountpaid: array[6],
             PaymentDate: now,
             PaymentTime: time,
@@ -50,7 +51,7 @@ function buildConfig(array) {
     return array[0] == 'GetAccount'
         ? {
               method: 'get',
-              url: `${process.env.baseGet}/${array[3]}/${array[4]}`,
+              url: `${process.env.baseGET}/${array[3]}/${array[4]}`,
               headers: {
                   username: array[1],
                   password: array[2],
@@ -59,7 +60,7 @@ function buildConfig(array) {
           }
         : {
               method: 'post',
-              url: `${process.env.basePost}/${array[3]}/${array[4]}`,
+              url: `${process.env.basePOST}`,
               headers: {
                   username: array[1],
                   password: array[2],
