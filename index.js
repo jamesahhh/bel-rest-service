@@ -37,7 +37,7 @@ function buildConfig(array) {
     if (array[0] == 'SetPayment') {
         now = moment().format('DD-MMM-yyyy').toUpperCase()
         time = moment().format('H:mm:ss')
-        inData = {
+        inData = JSON.stringify({
             AccountNumber: array[5],
             CustomerNumber: array[4],
             Amountpaid: array[6],
@@ -46,7 +46,7 @@ function buildConfig(array) {
             ReceiptNumber: array[7],
             TransactionType: array[8],
             PaymentStatus: array[9],
-        }
+        })
     }
     return array[0] == 'GetAccount'
         ? {
