@@ -4,6 +4,7 @@ const { unlink, access } = require('fs/promises')
 const { watch } = require('chokidar')
 const { constants, readFileSync, writeFile, mkdir } = require('fs')
 const { basename } = require('path')
+const moment = require('moment')
 var axios = require('axios')
 
 checkFor(process.env.WATCH_DIRECTORY)
@@ -32,15 +33,42 @@ function fileOps(path) {
 }
 
 function buildConfig(array) {
-    return {
-        method: 'get',
-        url: `${process.env.baseGET}/${array[3]}/${array[4]}`,
-        headers: {
-            username: array[1],
-            password: array[2],
-            token: array[5],
-        },
+    var now, time, inData
+    if (array[0] == 'SetPayment') {
+        now = moment().format('DD-MMM-yyyy').toUpperCase()
+        time = moment().format('H:mm:ss')
+        inData = JSON.stringify({
+            AccountNumber: array[5],
+            CustomerNumber: array[4],
+            Amountpaid: array[6],
+            PaymentDate: now,
+            PaymentTime: time,
+            ReceiptNumber: array[7],
+            TransactionType: array[8],
+            PaymentStatus: array[9],
+        })
     }
+    return array[0] == 'GetAccount'
+        ? {
+              method: 'get',
+              url: `${process.env.baseGET}/${array[3]}/${array[4]}`,
+              headers: {
+                  username: array[1],
+                  password: array[2],
+                  token: array[5],
+              },
+          }
+        : {
+              method: 'post',
+              url: `${process.env.basePOST}`,
+              headers: {
+                  username: array[1],
+                  password: array[2],
+                  token: array[3],
+                  'Content-Type': 'application/json',
+              },
+              data: inData,
+          }
 }
 
 //${config.cus_num}/${config.acc_num}
