@@ -103,11 +103,9 @@ async function fileClean(path) {
 }
 
 function checkFor(path) {
-    try {
-        access(path, constants.R_OK | constants.W_OK)
-    } catch (err) {
+    access(path, constants.R_OK | constants.W_OK).catch((err) => {
         createDirectory(path)
-    }
+    })
 }
 
 function createDirectory(path) {
