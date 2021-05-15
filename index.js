@@ -4,7 +4,6 @@ const { unlink, access } = require('fs/promises')
 const { watch } = require('chokidar')
 const { constants, readFileSync, writeFile, mkdir } = require('fs')
 const { basename } = require('path')
-const moment = require('moment')
 var axios = require('axios')
 
 checkFor(process.env.WATCH_DIRECTORY)
@@ -76,7 +75,14 @@ function getResponse(config, ext) {
             writeToFile(JSON.stringify(response.data), ext)
         })
         .catch(function (error) {
-            writeToFile(JSON.stringify(error.response.data), ext)
+            let errorOut =
+                error.response.status != 500
+                    ? //`Error maybe due to invalid token ${error.data}`
+                      JSON.stringify(error.response.data)
+                    : '500 Error Contact API Admins for assistance, make sure to look at input format'
+
+            log(errorOut)
+            //writeToFile(`Request Error: ${errorOut}`, ext)
         })
 }
 
