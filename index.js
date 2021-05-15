@@ -33,16 +33,14 @@ function fileOps(path) {
 }
 
 function buildConfig(array) {
-    var now, time, inData
+    var inData
     if (array[0] == 'SetPayment') {
-        now = moment().format('DD-MMM-yyyy').toUpperCase()
-        time = moment().format('H:mm:ss')
         inData = JSON.stringify({
             AccountNumber: array[5],
             CustomerNumber: array[4],
             Amountpaid: array[6],
-            PaymentDate: now,
-            PaymentTime: time,
+            PaymentDate: array[10],
+            PaymentTime: array[11],
             ReceiptNumber: array[7],
             TransactionType: array[8],
             PaymentStatus: array[9],
