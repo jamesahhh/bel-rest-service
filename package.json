@@ -22,7 +22,7 @@
     "dependencies": {
         "axios": "^0.21.1",
         "chai": "^4.3.4",
-        "chokidar": "^3.5.1",
+        "chokidar": "^3.5.2",
         "dotenv": "^8.2.0"
     }
 }
