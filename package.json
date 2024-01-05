@@ -20,7 +20,7 @@
     },
     "homepage": "https://github.com/jamesahhh/bel-rest-service#readme",
     "dependencies": {
-        "axios": "^0.21.1",
+        "axios": "^1.6.4",
         "chai": "^4.3.4",
         "chokidar": "^3.5.1",
         "dotenv": "^8.2.0"
